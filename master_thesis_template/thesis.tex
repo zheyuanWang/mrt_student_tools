@@ -1,0 +1,226 @@
+% ----------------------------------------------------------------
+% Thesis - Main document
+% ----------------------------------------------------------------
+
+\documentclass{thesisclass}
+% as defined in thesisclass.cls
+
+
+%% ---------------------------------
+%% | Information about the thesis  |
+%% ---------------------------------
+
+\newcommand{\myname}{Max Mustermann}
+\newcommand{\mytitle}{Title of my Thesis}
+
+\newcommand{\reviewerone}{Prof. Dr.-Ing. Christoph Stiller}
+\newcommand{\advisor}{Max Musterbetreuer, M.Sc.}
+
+\newcommand{\timeandplace}{Karlsruhe, April 2016}
+
+\newcommand{\frontmatterhint}{Draft! / Vorl\"aufige Fassung!}
+
+%% -------------------------------
+%% |  Information for PDF file   |
+%% -------------------------------
+\hypersetup{
+ pdfauthor={\myname},
+ pdftitle={\mytitle},
+ pdfsubject={Thesis},
+ pdfkeywords={}
+}
+\usepackage[english]{babel}  	% English
+%\usepackage[ngerman]{babel}  	% German
+
+
+%% -------------------------------
+%% |    My packages /commands    |
+%% -------------------------------
+% track changes
+    %\usepackage{changes} 		% highlight changes
+	\usepackage[final]{changes}	% don't highlight changes
+
+% tables
+	\usepackage{array,multirow,graphicx}
+
+% pseudocode
+	\usepackage[ruled,vlined]{algorithm2e}
+
+% for forcing positions of tables, figures, ...
+	\usepackage{float}
+
+% units
+	\usepackage{siunitx}
+	\usepackage{dcolumn}
+
+
+%% --------------------------------
+%% |      glossaries               |
+%% --------------------------------
+\newif\ifuseglossaries			% as the glossaries package sometimes causes problems, you can switch if of
+								% if switching of, remember to remove all \gls{}/... statements
+								
+\useglossariestrue				% use glossaries (acronyms and online references)
+%\useglossariesfalse			% don't use glossaries
+
+\ifuseglossaries
+	\usepackage[acronym,xindy,toc,nomain,nonumberlist,nopostdot,notranslate]{glossaries}%
+
+	\newglossary[onlineref]{onlineref}{onli}{onlo}{Online References}
+	
+	\newglossarystyle{mylong}{%
+  		\setglossarystyle{long}%
+  		\renewcommand*{\glsnamefont}[1]{\textbf{##1}}%
+  	}%
+  	
+  	\newglossarystyle{mylist}{%
+  		\setglossarystyle{list}%
+  		\renewcommand*{\glsnamefont}[1]{\textrm{\textmd{##1}}}%
+  	}%
+  	
+  	\makeglossaries
+  	
+	% ordinary acronyms
+	\newacronym{ma}{MA}{My Acronym}
+	\newacronym{}{}{}
+	% usage: \gls{} \glspl{} or \acrshort{}
+	
+	% online references
+	\newglossaryentry{online_reference}{
+		type=onlineref, 
+		name={[01]}, 
+		description={\hspace{1.5mm}My Online Reference\newline 
+			\href{http://www.mrt.kit.edu/}{http://www.mrt.kit.edu/}\newline 
+			retrieved 2016-04-28 }}
+\else
+\fi
+
+
+%% ---------------------------------
+%% | ToDo Marker - only for draft! |
+%% ---------------------------------
+% Remove this section for final version!
+\setlength{\marginparwidth}{20mm}
+
+\newcommand{\margtodo}
+{\marginpar{\textbf{\textcolor{blue}{ToDo}}}{}}
+
+\newcommand{\todo}[1]
+{{\textbf{\textcolor{blue}{(\margtodo{}#1)}}}{}}
+
+\newcommand{\margmajortodo}
+{\marginpar{\textbf{\textcolor{red}{ToDo}}}{}}
+
+\newcommand{\majortodo}[1]
+{{\textbf{\textcolor{red}{(\margmajortodo{}#1)}}}{}}
+
+%% --------------------------------
+%% | Draft Marker - only for draft! |
+%% --------------------------------
+% Remove this section for final version!
+%\usepackage{draftwatermark}
+%\SetWatermarkText{\hspace{10pt}-draft-}
+%\SetWatermarkScale{2.3}
+%\SetWatermarkColor[gray]{0.95}
+
+
+%% --------------------------------
+%% | Old Marker - only for draft! |
+%% --------------------------------
+% Remove this section for final version!
+\newenvironment{deprecated}
+{\begin{color}{gray}}
+{\end{color}}
+
+
+%% --------------------------------
+%% | Settings for word separation |
+%% --------------------------------
+% Help for separation:
+% In german package the following hints are additionally available:
+% "- = Additional separation
+% "| = Suppress ligation and possible separation (e.g. Schaf"|fell)
+% "~ = Hyphenation without separation (e.g. bergauf und "~ab)
+% "= = Hyphenation with separation before and after
+% "" = Separation without a hyphenation (e.g. und/""oder)
+
+% Describe separation hints here:
+\hyphenation{
+Wort-tren-nung
+% Ma-na-ge-ment  Netz-werk-ele-men-ten
+% Netz-werk Netz-werk-re-ser-vie-rung
+% Netz-werk-adap-ter Fein-ju-stier-ung
+% Da-ten-strom-spe-zi-fi-ka-tion Pa-ket-rumpf
+% Kon-troll-in-stanz
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Here, main documents begins %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+
+\frontmatter
+
+\include{Preface/01_Title}
+\blankpage
+\include{Preface/02_Declaration}
+\blankpage
+\include{Preface/03_Acknowledgement}
+\blankpage
+\include{Preface/04_Abstract}
+\blankpage
+
+\tableofcontents
+
+% Acronyms
+\ifuseglossaries
+	\newpage
+	\thispagestyle{empty}
+	\printglossary[type=acronym, style=mylong]
+\else
+\fi
+
+
+%% -----------------
+%% |   Main part   |
+%% -----------------
+\mainmatter
+\pagenumbering{arabic}
+\include{Main/1_Introduction}      
+\include{Main/2_Fundamentals_Related_Work}     
+\include{Main/3_Conditions_Preliminaries} 		
+\include{Main/4_Concepts}
+\include{Main/5_Implementation}
+\include{Main/6_Evaluation}
+\include{Main/7_Conclusion_Future_Work}      
+
+%% --------------------
+%% |   Appendix+Verzeichnisse   |
+%% --------------------
+\appendix
+\include{Appendix/Appendix}
+
+% List of Figures
+\cleardoublepage
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
+
+% Liste of Tables
+\cleardoublepage
+\addcontentsline{toc}{chapter}{\listtablename}
+\listoftables
+
+% Bibliography
+\bibliographystyle{IEEEtranSA}   		% IEEE Alphanumeric
+\cleardoublepage
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliography{thesis_bibtex}
+
+% Online References
+\ifuseglossaries
+	\printglossary[type=onlineref, style=mylist]
+\else
+\fi
+
+\end{document}
