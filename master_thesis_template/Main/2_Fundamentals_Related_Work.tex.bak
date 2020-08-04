@@ -1,0 +1,23 @@
+% !TeX root = ../thesis.tex
+
+\chapter{Fundamentals and Related Work}
+\label{sec:fundamentals_related-work}
+
+\Blindtext
+
+\begin{figure}[!htbp]
+    \centering
+    \subfigure[Logo 1]{
+        \includegraphics[width = \textwidth / 2 ]{Logos/KITLogo_RGB.pdf}
+        \label{fig:logo1}
+    }
+    \hspace{10pt}
+     %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+     %(or a blank line to force the subfigure onto a new line)
+    \subfigure[Logo 2]{
+        \includegraphics[width = \textwidth / 2 ]{Logos/KITLogo_RGB.pdf}
+        \label{fig:logo2}
+    }
+    \caption[Short Description for List of Figures]{Long Description for under the figure.}
+    \label{fig:logo1and2}
+\end{figure}
