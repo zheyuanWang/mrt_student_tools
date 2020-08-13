@@ -1,11 +1,7 @@
 import tensorflow as tf
-import matplotlib.pyplot as plt
 from termcolor import colored
 import numpy as np
-from PIL import Image
 import cv2
-import os
-
 
 def cprint(text, c=3):
     color_to_choose = ['red' ,'yellow', 'green', 'cyan', 'blue', 'white', 'magenta', 'grey']
@@ -56,22 +52,22 @@ def print_TFrecordimage_tf2fashion(path_to_file):
         # Parse the input `tf.Example` proto using the dictionary above.
         return tf.io.parse_single_example(example_proto, feature_description)
     parsed_dataset = raw_dataset.map(_parse_function)
-    range_oftfrecord = path_to_file.split('/')[-3]
+    folder_name_of_range = path_to_file.split('/')[-3]
     for i, parsed_record in enumerate(parsed_dataset.take(3)):   # each is a dict
         # input image z_max
         z_max = parsed_record['image/det_z_max/encoded']
-        cv2.imwrite('/home/zwang/Downloads/{}_{}_{}.png'.format(range_oftfrecord,i, "z_max"),
+        cv2.imwrite('/home/zwang/Downloads/{}_{}_{}.png'.format(folder_name_of_range,i, "z_max"),
                     tf.image.decode_png(z_max).numpy())
         # label as image
         label_sparse = parsed_record['image/segmentation/class/encoded_sparse']
         de_label = tf.image.decode_png(label_sparse).numpy()
-        cv2.imwrite('/home/zwang/Downloads/{}_{}_{}.png'.format(range_oftfrecord,i, "label"), de_label)
+        cv2.imwrite('/home/zwang/Downloads/{}_{}_{}.png'.format(folder_name_of_range,i, "label"), de_label)
+    cprint("images exported from path{}".format(path_to_file),6)
 
 if __name__ == '__main__':
     tf.enable_eager_execution()
-    TFPATH_RANGE10_VAL = "/mrtstorage/users/zwang/pcd_mapper_pastonly/polar_pastrange10/val/val-00000-of-00021.tfrecord"
-    TFPATH_RANGE5_TRAIN = "/mrtstorage/users/zwang/pcd_mapper_pastonly/polar_pastrange5+1/train/train-00003-of-00096.tfrecord"
+    TFPATH_RANGE20_V = "/mrtstorage/users/zwang/pcd_mapper_pastonly/polar_pastrange20/val/val-00014-of-00021.tfrecord"
+    TFPATH_RANGE10_V = "/mrtstorage/users/zwang/pcd_mapper_pastonly/polar_pastrange10/val/val-00000-of-00021.tfrecord"
+    TFPATH_RANGE5_T = "/mrtstorage/users/zwang/pcd_mapper_pastonly/polar_pastrange5+1/train/train-00003-of-00096.tfrecord"
 
-    #simple_print_content_of_TFrecord("/mrtstorage/users/zwang/pcd_mapper_pastonly/polar_pastrange20/val/val-00000-of-00021.tfrecord")
-    print_TFrecordimage_tf2fashion(TFPATH_RANGE5_TRAIN)
-    pass
+    print_TFrecordimage_tf2fashion(TFPATH_RANGE20_V)
