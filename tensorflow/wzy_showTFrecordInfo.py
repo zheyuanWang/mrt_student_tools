@@ -1,11 +1,7 @@
 import tensorflow as tf
-import matplotlib.pyplot as plt
 from termcolor import colored
 import numpy as np
-from PIL import Image
 import cv2
-
-
 
 def cprint(text, c=3):
     color_to_choose = ['red' ,'yellow', 'green', 'cyan', 'blue', 'white', 'magenta', 'grey']
@@ -22,16 +18,8 @@ def simple_print_content_of_TFrecord(path):
         print(tf.train.Example.FromString(example))
         break
 
-
 def print_TFrecordimage_tf2fashion(path_to_file):
-    #dataset = tf.data.TFRecordDataset(filenames=[path_to_file])
-    #raw_example = next(iter(dataset))
     raw_dataset = tf.data.TFRecordDataset(path_to_file)
-
-    #parsed = tf.train.Example.FromString(raw_example.numpy())
-    #out= parsed.features.feature['image/det_z_min/encoded']
-    #cprint(type(out))
-
     feature_description = {
         'image/det_z_min/encoded':
             tf.io.FixedLenFeature((), tf.string, default_value=''),
@@ -53,27 +41,33 @@ def print_TFrecordimage_tf2fashion(path_to_file):
             tf.io.FixedLenFeature((), tf.int64, default_value=0),
         'image/segmentation/class/format':
             tf.io.FixedLenFeature((), tf.string, default_value='png'),
+        'image/channels':
+            tf.io.FixedLenFeature((), tf.int64, default_value=0),
+        'image/segmentation/class/encoded_sparse':
+            tf.io.FixedLenFeature((), tf.string, default_value=''),
+        'image/segmentation/class/encoded_dense':
+            tf.io.FixedLenFeature((), tf.string, default_value=''),
     }
-
     def _parse_function(example_proto):
         # Parse the input `tf.Example` proto using the dictionary above.
         return tf.io.parse_single_example(example_proto, feature_description)
     parsed_dataset = raw_dataset.map(_parse_function)
-    cprint(type(parsed_dataset))
-    for parsed_record in parsed_dataset.take(1):   # each is a dict
-        cprint(parsed_record.keys())
-        height = parsed_record['image/height']
-        width = parsed_record['image/width']
-        observation=parsed_record['image/observations/encoded']
-        de_obser = tf.image.decode_png(observation).numpy()
-        print(height.numpy(), width.numpy(), type(de_obser), np.shape(de_obser))
-
-        cv2.imwrite('/home/zwang/Downloads/{}.png'.format("obser"), de_obser)
-
+    folder_name_of_range = path_to_file.split('/')[-3]
+    for i, parsed_record in enumerate(parsed_dataset.take(3)):   # each is a dict
+        # input image z_max
+        z_max = parsed_record['image/det_z_max/encoded']
+        cv2.imwrite('/home/zwang/Downloads/{}_{}_{}.png'.format(folder_name_of_range,i, "z_max"),
+                    tf.image.decode_png(z_max).numpy())
+        # label as image
+        label_sparse = parsed_record['image/segmentation/class/encoded_sparse']
+        de_label = tf.image.decode_png(label_sparse).numpy()
+        cv2.imwrite('/home/zwang/Downloads/{}_{}_{}.png'.format(folder_name_of_range,i, "label"), de_label)
+    cprint("images exported from path{}".format(path_to_file),6)
 
 if __name__ == '__main__':
     tf.enable_eager_execution()
-    TFPATH = "/mrtstorage/users/zwang/pcd_mapper_pastonly/polar_pastrange10/val/val-00000-of-00021.tfrecord"
-    #simple_print_content_of_TFrecord("/mrtstorage/users/zwang/pcd_mapper_pastonly/polar_pastrange20/val/val-00000-of-00021.tfrecord")
-    print_TFrecordimage_tf2fashion(TFPATH)
-    pass
+    TFPATH_RANGE20_V = "/mrtstorage/users/zwang/pcd_mapper_pastonly/polar_pastrange20/val/val-00014-of-00021.tfrecord"
+    TFPATH_RANGE10_V = "/mrtstorage/users/zwang/pcd_mapper_pastonly/polar_pastrange10/val/val-00000-of-00021.tfrecord"
+    TFPATH_RANGE5_T = "/mrtstorage/users/zwang/pcd_mapper_pastonly/polar_pastrange5+1/train/train-00003-of-00096.tfrecord"
+
+    print_TFrecordimage_tf2fashion(TFPATH_RANGE20_V)
