@@ -23,7 +23,7 @@ EXP_DIR="/home/zwang/Documents/mrt_experiments/tests/m3l_b4_r1_n8_int1_ckALL_6"
 cd "${CURRENT_DIR}"
 
 mkdir -p "${EXP_DIR}/val"
-cp "${WORK_DIR}"/"${0}" "${EXP_DIR}"/.
+cp "${WORK_DIR}"/"${0}" "${EXP_DIR}"/.  # copy this bash to EXP_DIR
 
 CUDA_VISIBLE_DEVICES=2 python "${WORK_DIR}"/eval.py \
   --logtostderr \
